@@ -1,0 +1,97 @@
+
+import pandas as pd #read the dataset
+import numpy as np #numerical python
+import matplotlib.pyplot as plt #plot the graph
+import seaborn as sns #plot the graph
+from sklearn.model_selection import train_test_split #splitting of dataset
+from sklearn.naive_bayes import GaussianNB #classifier package-gnb
+from sklearn.metrics import accuracy_score,precision_score,recall_score,f1_score #determining accuracy,precision,recall,f1score
+from sklearn.metrics import confusion_matrix #confusion matrix
+from sklearn.metrics import plot_confusion_matrix #plotting confusion matrix
+import pickle
+
+#read the dataset
+dataset = pd.read_csv("D:\mini project\data set\PIDD\diabetes.csv")
+dataset.head() #to display first five rows
+
+#data analysis 
+dataset.shape #rows and columns
+dataset.info() #to know about the data-types of attributes
+dataset.isnull() #to check for null values
+dataset.isnull().sum() #to know the total number of null values
+dataset.describe() #to know the statistical details
+dataset['Outcome'].value_counts() #counts the no of values that belong to certain class label
+
+dataset.groupby('Outcome').mean() #to obtain mean value of each attribute based on the class label
+x = dataset.drop("Outcome",axis=1) #dropping the outcome attribute
+y = dataset['Outcome'] #assigning the outcome attribute to new variable
+x
+Y
+
+dataset["Pregnancies"] = dataset["Pregnancies"].replace(0,dataset["Pregnancies"].mean())
+dataset["Glucose"] = dataset["Glucose"].replace(0,dataset["Glucose"].mean())
+dataset["BloodPressure"] = dataset["BloodPressure"].replace(0,dataset["BloodPressure"].mean())
+dataset["SkinThickness"] = dataset["SkinThickness"].replace(0,dataset["SkinThickness"].mean())
+dataset["Insulin"] = dataset["Insulin"].replace(0,dataset["Insulin"].mean())
+dataset["BMI"] = dataset["BMI"].replace(0,dataset["BMI"].mean())
+dataset["DiabetesPedigreeFunction"].replace(0,dataset["DiabetesPedigreeFunction"].mean())
+dataset["Age"] = dataset["Age"].replace(0,dataset["Age"].mean())
+dataset
+
+#data splitting
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2,random_state=0)
+print(x.shape,x_train.shape,x_test.shape)
+
+#Naive Bayes-Training
+#fitting the model
+model = GaussianNB()
+model.fit(x_train,y_train)
+
+#making predictions
+predictions = model.predict(x_train)
+print(predictions)
+
+#Evaluation
+accuracy = accuracy_score(predictions,y_train)
+print(accuracy)
+
+#Creating a confusion matrix
+cm = confusion_matrix(y_train,predictions)
+cm
+plot_confusion_matrix(model,x_train,y_train)
+
+precision = precision_score(predictions,y_train)
+print(precision)
+
+recall = recall_score(predictions,y_train)
+print(recall)
+
+f1score= f1_score(predictions,y_train)
+print(f1score)
+
+#Naive Bayes - Testing
+#fitting the model
+model = GaussianNB()
+model.fit(x_test,y_test)
+
+#making predictions
+predictions = model.predict(x_test)
+print(predictions)
+
+#Evaluation
+accuracy = accuracy_score(predictions,y_test)
+print(accuracy)
+
+#Creating a confusion matrix
+cm = confusion_matrix(y_test,predictions)
+cm
+plot_confusion_matrix(model,x_test,y_test)
+
+precision = precision_score(predictions,y_test)
+print(precision)
+
+recall = recall_score(predictions,y_test)
+print(recall)
+
+f1score= f1_score(predictions,y_test)
+print(f1score)
